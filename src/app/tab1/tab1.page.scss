@@ -1,0 +1,55 @@
+.page-title {
+  font-size: 4vh;
+  font-weight: 600;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  margin-bottom: 20px;
+  margin-top: 32px;
+  user-select: none;
+}
+
+.info {
+  user-select: none;
+}
+
+.grid-container {
+  max-width: 600px;
+  user-select: none;
+}
+
+.letter {
+  aspect-ratio: 1;
+  font-weight: 600;
+  background-color: #453c3f;
+  border-radius: 10%;
+  display: flex;
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
+  font-size: 72px;
+  line-height: 1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.selected {
+  border-bottom: 0.25em solid #4C4347 !important;
+}
+
+.empty {
+  background-color: transparent;
+  border: 0.125em solid #4C4347;
+}
+
+.wrong {
+  background-color: #312a2c
+}
+
+.correct {
+  background-color: #3aa394;
+}
+
+.inplacewrong {
+  background-color: #d3ad69;
+}

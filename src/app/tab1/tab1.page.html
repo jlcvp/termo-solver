@@ -1,17 +1,30 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 1
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+<ion-content [fullscreen]="true" class="tab-content">
+  <h1 class="page-title">Term.ooo DICAS</h1>
+  <div class="info ion-justify-content-center ion-align-items-center ion-text-center">
+    <p>Sugestão de palavras para Termo</p>
+    <p>Digite as palavras que você já tentou e clique nas letras para alterar o status</p>
+  </div>
+  <ion-grid id="wordcontainer" class="grid-container" fixed>
+    <ion-row *ngFor="let row of wordRows; let i = index">
+        <ion-col *ngFor="let val of row.validity; let j = index">
+          <div tabindex="-1" id="letter-{{i}}-{{j}}" *ngIf="isCurrentRow(row)" [class.selected]="j === currentLetter" class="letter empty">{{row.word[j]}}</div>
+          <div *ngIf="isPastRow(row)" class="letter {{ getClassNameForValidity(val) }}" (click)="rotateLetterStatus(i,j)">{{row.word[j]}}</div>
+          <div *ngIf="isFutureRow(row)" class="letter"></div>
+        </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
+<!-- <ion-footer>
+  <ion-card class="soft-keyboard-wrapper">
+    <ion-card-header class="ion-text-end">
+      <ion-button color="primary">
+        <ion-icon slot="icon-only" name="caret-up-outline"></ion-icon>
+      </ion-button>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-label>
+        <p>Boa noite</p>
+      </ion-label>
+    </ion-card-content>
+  </ion-card>
+</ion-footer> -->

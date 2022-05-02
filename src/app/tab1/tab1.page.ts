@@ -124,7 +124,7 @@ export class Tab1Page implements AfterViewInit {
         this.handleBackspace()
       } else if (event.key === 'Enter') {
         this.handleEnter()
-      } else if (event.key.toUpperCase().charCodeAt(0) >= 65 && event.key.toUpperCase().charCodeAt(0) <= 90) {
+      } else if (event.key.length === 1 && event.key.toUpperCase().charCodeAt(0) >= 65 && event.key.toUpperCase().charCodeAt(0) <= 90) {
         this.handleLetter(event.key)
       }
     })

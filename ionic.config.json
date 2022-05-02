@@ -1,0 +1,7 @@
+{
+  "name": "term.ooo Solver",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

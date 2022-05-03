@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/semi */
 import { AfterViewInit, Component } from '@angular/core';
-import { ToastController } from '@ionic/angular';
+import { DictionaryService } from '../services/dictionary.service';
 
+const NUM_ROWS = 6
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
@@ -12,8 +13,10 @@ export class Tab1Page implements AfterViewInit {
   wordRows = []
   currentRow = 0
   currentLetter = 0
-  constructor(private toastController: ToastController) {
+  constructor(private dictionaryService: DictionaryService) {
     this.resetVars()
+    this.wordRows[0].word = 'raios'.split('')
+    this.currentLetter = 4
   }
 
   ngAfterViewInit() {
@@ -24,7 +27,7 @@ export class Tab1Page implements AfterViewInit {
     this.wordRows = []
     this.currentRow = 0
     this.currentLetter = 0
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < NUM_ROWS; i++) {
       this.wordRows.push({
         word: [' ', ' ', ' ', ' ', ' '],
         rowState: (i === this.currentRow) ? RowState.current : RowState.future,
@@ -88,6 +91,23 @@ export class Tab1Page implements AfterViewInit {
     return row.rowState === RowState.future
   }
 
+  editRow(event, rowIndex: number) {
+    event.target.blur()
+
+    this.wordRows[this.currentRow].rowState = (this.currentRow > rowIndex) ? RowState.future : RowState.past
+    this.currentRow = rowIndex
+    this.currentLetter = 0
+    this.wordRows[this.currentRow].rowState = RowState.current
+  }
+
+  getWords() {
+    console.log({ words: this.dictionaryService.getWords() })
+  }
+
+  private getNextWord() {
+
+  }
+
   private handleBackspace() {
     if (this.currentLetter > 0) {
       this.currentLetter--
@@ -97,15 +117,15 @@ export class Tab1Page implements AfterViewInit {
   }
 
   private handleEnter() {
-    const isRowComplete = this.wordRows[this.currentRow].word.every(letter => letter !== ' ')
-    if (isRowComplete) {
+    if (this.isRowComplete(this.currentRow)) {
       this.wordRows[this.currentRow].rowState = RowState.past
       this.wordRows[this.currentRow].validity = [ Validity.wrong, Validity.wrong, Validity.wrong, Validity.wrong, Validity.wrong ]
-      this.currentRow++
-      this.wordRows[this.currentRow].rowState = RowState.current
-      this.currentLetter = 0
-      if (this.currentRow === 7) {
-        //handle finish
+      if(this.currentRow < NUM_ROWS - 1) {
+        this.currentRow++
+        this.wordRows[this.currentRow].rowState = RowState.current
+        this.currentLetter = 0
+      } else {
+        // handle finish
       }
     }
   }
@@ -114,13 +134,17 @@ export class Tab1Page implements AfterViewInit {
     if (this.currentLetter < 5) {
       this.wordRows[this.currentRow].word[this.currentLetter] = letter
       this.currentLetter++
+      if(this.currentLetter === 5) {
+        this.handleEnter()
+      }
     }
   }
 
   private registerKeyboardEvents() {
     document.addEventListener('keydown', (event) => {
-      console.log({ event })
-      if (event.key === 'Backspace') {
+      if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
+        return
+      } else if (event.key === 'Backspace') {
         this.handleBackspace()
       } else if (event.key === 'Enter') {
         this.handleEnter()
@@ -128,24 +152,10 @@ export class Tab1Page implements AfterViewInit {
         this.handleLetter(event.key)
       }
     })
+  }
 
-    for(let i = 0; i < 7; i++) {
-      for(let j = 0; j < 5; j++) {
-        const letterId = `letter-${i}-${j}`
-        const letterElement = document.getElementById(letterId)
-        if (letterElement) {
-          letterElement.addEventListener('click', () => {
-            this.selectLetter(i, j)
-
-            letterElement.focus()
-            this.toastController.create({
-              message: `Selected ${letterId}`,
-            }).then(toast => toast.present())
-
-          })
-        }
-      }
-    }
+  private isRowComplete(rowIndex: number): boolean {
+    return this.wordRows[rowIndex].word.every(letter => letter !== ' ')
   }
 }
 

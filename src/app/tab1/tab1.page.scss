@@ -27,7 +27,7 @@
   box-sizing: border-box;
   justify-content: center;
   align-items: center;
-  font-size: 72px;
+  font-size: 6vw;
   line-height: 1em;
   text-transform: uppercase;
   cursor: pointer;
@@ -52,4 +52,20 @@
 
 .inplacewrong {
   background-color: #d3ad69;
+}
+
+.round-btn {
+  border-radius: 50%;
+  background-color: #453c3f;
+  border: 0.125em solid #4C4347;
+  color: #fff;
+  font-size: 1.5em;
+  line-height: 1em;
+  text-align: center;
+  cursor: pointer;
+}
+
+.center-vertical {
+  display: flex;
+  align-items: center;
 }

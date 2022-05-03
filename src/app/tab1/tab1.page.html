@@ -7,12 +7,23 @@
   <ion-grid id="wordcontainer" class="grid-container" fixed>
     <ion-row *ngFor="let row of wordRows; let i = index">
         <ion-col *ngFor="let val of row.validity; let j = index">
-          <div tabindex="-1" id="letter-{{i}}-{{j}}" *ngIf="isCurrentRow(row)" [class.selected]="j === currentLetter" class="letter empty">{{row.word[j]}}</div>
+          <div id="letter-{{i}}-{{j}}" *ngIf="isCurrentRow(row)" (click)="selectLetter(i,j)" [class.selected]="j === currentLetter" class="letter empty">{{row.word[j]}}</div>
           <div *ngIf="isPastRow(row)" class="letter {{ getClassNameForValidity(val) }}" (click)="rotateLetterStatus(i,j)">{{row.word[j]}}</div>
           <div *ngIf="isFutureRow(row)" class="letter"></div>
         </ion-col>
+        <ion-col class="center-vertical ion-text-center ion-justify-content-center ion-align-items-center">
+          <ion-button *ngIf="isPastRow(row)" size="small" color="primary" (click)="editRow($event, i)">
+            <ion-icon slot="start" name="create-outline"></ion-icon>
+            Editar
+          </ion-button>
+        </ion-col>
     </ion-row>
   </ion-grid>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="getWords()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>
 <!-- <ion-footer>
   <ion-card class="soft-keyboard-wrapper">

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/semi */
 import { AfterViewInit, Component } from '@angular/core';
+import { Rule } from '../models/rule';
 import { DictionaryService } from '../services/dictionary.service';
 
 const NUM_ROWS = 6
@@ -10,12 +11,17 @@ const NUM_ROWS = 6
 })
 
 export class Tab1Page implements AfterViewInit {
-  wordRows = []
+  wordRows: { word: string[]; rowState: RowState; validity: Validity[] }[] = []
   currentRow = 0
   currentLetter = 0
+  private suggestions: string[] = []
+  private currentRules: Rule[] = []
+
   constructor(private dictionaryService: DictionaryService) {
     this.resetVars()
-    this.wordRows[0].word = 'raios'.split('')
+    this.dictionaryService.getNextWord(this.currentRules).then(word => {
+      this.wordRows[this.currentRow].word = word.split('')
+    })
     this.currentLetter = 4
   }
 
@@ -75,8 +81,11 @@ export class Tab1Page implements AfterViewInit {
         this.wordRows[rowIndex].validity[letterIndex] = Validity.wrong
         break
       default:
-        break
+        return
     }
+
+    this.updateRules()
+    this.updateNextWord()
   }
 
   isCurrentRow(row) {
@@ -100,12 +109,30 @@ export class Tab1Page implements AfterViewInit {
     this.wordRows[this.currentRow].rowState = RowState.current
   }
 
-  getWords() {
-    console.log({ words: this.dictionaryService.getWords() })
+  private async updateNextWord(): Promise<void> {
+    const word = await this.dictionaryService.getNextWord(this.currentRules)
+    this.wordRows[this.currentRow].word = word.split('')
   }
 
-  private getNextWord() {
-
+  private updateRules() {
+    this.currentRules = []
+    this.wordRows.forEach(row => {
+      if(row.rowState === RowState.past) {
+        row.word.forEach((letter, index) => {
+          if (letter !== ' ' && row.validity[index] !== Validity.empty) {
+            const includes = row.validity[index] !== Validity.wrong
+            const knownPosition = row.validity[index] === Validity.correct ? index : null
+            const excludePosition = knownPosition == null ? index : null
+            this.currentRules.push({
+              letter,
+              includes,
+              knownPosition,
+              excludePosition
+            })
+          }
+        })
+      }
+    })
   }
 
   private handleBackspace() {
@@ -119,7 +146,21 @@ export class Tab1Page implements AfterViewInit {
   private handleEnter() {
     if (this.isRowComplete(this.currentRow)) {
       this.wordRows[this.currentRow].rowState = RowState.past
-      this.wordRows[this.currentRow].validity = [ Validity.wrong, Validity.wrong, Validity.wrong, Validity.wrong, Validity.wrong ]
+      this.wordRows[this.currentRow].validity = this.wordRows[this.currentRow].word.map((letter, index) => {
+        for(const rule of this.currentRules) {
+          if (rule.includes) {
+            if (rule.letter === letter && rule.knownPosition === index) {
+              return Validity.correct
+            } else {
+              return Validity.inplaceWrong
+            }
+          }
+        }
+        return Validity.wrong
+      })
+
+      console.log({ obj: this.wordRows[this.currentRow] })
+
       if(this.currentRow < NUM_ROWS - 1) {
         this.currentRow++
         this.wordRows[this.currentRow].rowState = RowState.current
@@ -163,7 +204,7 @@ export enum Validity {
   empty = 'empty',
   wrong = 'wrong',
   inplaceWrong = 'inplaceWrong',
-  correct = 'correct',
+  correct = 'correct'
 }
 
 export enum RowState {

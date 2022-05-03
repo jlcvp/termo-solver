@@ -4,7 +4,7 @@
     <p>Sugestão de palavras para Termo</p>
     <p>Digite as palavras que você já tentou e clique nas letras para alterar o status</p>
   </div>
-  <ion-grid id="wordcontainer" class="grid-container" fixed>
+  <ion-grid id="wordcontainer" class="grid-container">
     <ion-row *ngFor="let row of wordRows; let i = index">
         <ion-col *ngFor="let val of row.validity; let j = index">
           <div id="letter-{{i}}-{{j}}" *ngIf="isCurrentRow(row)" (click)="selectLetter(i,j)" [class.selected]="j === currentLetter" class="letter empty">{{row.word[j]}}</div>

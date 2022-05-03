@@ -5,7 +5,7 @@
   "homepage": "https://ionicframework.com/",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --host 192.168.0.101",
+    "start": "ng serve",
     "build": "ng build --configuration production",
     "build:dev": "ng build",
     "test": "ng test",

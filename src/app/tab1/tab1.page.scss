@@ -16,6 +16,7 @@
 .grid-container {
   max-width: 600px;
   user-select: none;
+  border: #3aa394 1px solid;
 }
 
 .letter {
@@ -27,7 +28,7 @@
   box-sizing: border-box;
   justify-content: center;
   align-items: center;
-  font-size: 6vw;
+  font-size: 6.5vmin;
   line-height: 1em;
   text-transform: uppercase;
   cursor: pointer;

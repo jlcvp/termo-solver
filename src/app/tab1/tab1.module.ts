@@ -6,6 +6,7 @@ import { Tab1Page } from './tab1.page';
 
 import { Tab1PageRoutingModule } from './tab1-routing.module';
 import { DictionaryService } from '../services/dictionary.service';
+import { SoftKeyboardComponent } from '../components/soft-keyboard/soft-keyboard.component';
 
 @NgModule({
   imports: [
@@ -17,6 +18,6 @@ import { DictionaryService } from '../services/dictionary.service';
   providers: [
     DictionaryService
   ],
-  declarations: [Tab1Page]
+  declarations: [Tab1Page, SoftKeyboardComponent]
 })
 export class Tab1PageModule {}

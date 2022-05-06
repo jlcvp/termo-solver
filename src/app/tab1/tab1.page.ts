@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/semi */
 import { AfterViewInit, Component } from '@angular/core';
 import { Rule } from '../models/rule';
 import { DictionaryService } from '../services/dictionary.service';
@@ -107,6 +106,19 @@ export class Tab1Page implements AfterViewInit {
     this.currentRow = rowIndex
     this.currentLetter = 0
     this.wordRows[this.currentRow].rowState = RowState.current
+  }
+
+  onSoftKeyboardKeyPress(event) {
+    switch(event) {
+      case 'backspace':
+        this.handleBackspace()
+        break
+      case 'enter':
+        this.handleEnter()
+        break
+      default:
+        this.handleLetter(event)
+    }
   }
 
   private async updateNextWord(): Promise<void> {

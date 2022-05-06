@@ -19,6 +19,8 @@
         </ion-col>
     </ion-row>
   </ion-grid>
+
+  <app-soft-keyboard (keyPressed)="onSoftKeyboardKeyPress($event)"></app-soft-keyboard>
   <!-- <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="getWords()">
       <ion-icon name="add"></ion-icon>

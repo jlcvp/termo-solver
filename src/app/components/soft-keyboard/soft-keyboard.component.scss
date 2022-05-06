@@ -1,0 +1,16 @@
+.letter-key {
+  min-height: 4.5vmin;
+  min-width: 4.5vmin;
+  font-size: min(6vmin, 2.0rem);
+  font-family: monospace;
+  --padding-start: 0.7vmin;
+  --padding-end: 0.7vmin;
+}
+
+.backspace-key, .enter-key {
+  min-height: 4.5vmin;
+  min-width: 4.5vmin;
+  font-size: min(4vmin, 1.0rem);
+  --padding-start: 0.7vmin;
+  --padding-end: 0.7vmin;
+}

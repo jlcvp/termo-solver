@@ -35,7 +35,7 @@ export class DictionaryService {
     }
   }
 
-  public getNextWord(rules: Rule[]): Promise<string> {
+  public getNextSuggestions(rules: Rule[], maxResults: number): Promise<string[]> {
     return new Promise((resolve, reject) => {
       let availableWords = this.dictionary
       for(const rule of rules) {
@@ -52,12 +52,10 @@ export class DictionaryService {
         }
       }
 
-      // logic for best word
-      const topWords: string[] = this.getTopWords(availableWords, 5)
-      console.log({ topWords, availableWords })
-      const topWord = topWords.length > 0 ? topWords[0] : '     '
-      resolve(topWord)
+      // get best words
+      const topWords: string[] = this.getTopWords(availableWords, maxResults)
 
+      resolve(topWords)
     });
   }
 

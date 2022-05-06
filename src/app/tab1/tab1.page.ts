@@ -14,13 +14,12 @@ export class Tab1Page implements AfterViewInit {
   currentRow = 0
   currentLetter = 0
   private suggestions: string[] = []
+  private suggestionIndex = 0
   private currentRules: Rule[] = []
 
   constructor(private dictionaryService: DictionaryService) {
     this.resetVars()
-    this.dictionaryService.getNextWord(this.currentRules).then(word => {
-      this.wordRows[this.currentRow].word = word.split('')
-    })
+    this.updateNextWord()
     this.currentLetter = 4
   }
 
@@ -61,8 +60,6 @@ export class Tab1Page implements AfterViewInit {
   }
 
   selectLetter(rowIndex: number, letterIndex: number) {
-    //set focus
-    //document.getElementById(`letter-${rowIndex}-${letterIndex}`).focus()
     this.currentRow = rowIndex
     this.currentLetter = letterIndex
   }
@@ -121,9 +118,48 @@ export class Tab1Page implements AfterViewInit {
     }
   }
 
+  nextSuggestion() {
+    this.suggestionIndex = (this.suggestionIndex + 1) % this.suggestions.length
+
+    if (this.suggestionIndex === 0) {
+      // show toast
+    }
+    this.wordRows[this.currentRow].word = this.suggestions[this.suggestionIndex].split('')
+  }
+
+  handleEnter() {
+    if (this.isRowComplete(this.currentRow)) {
+      this.wordRows[this.currentRow].rowState = RowState.past
+      this.wordRows[this.currentRow].validity = this.wordRows[this.currentRow].word.map((letter, index) => {
+        for(const rule of this.currentRules) {
+          if (rule.includes) {
+            if (rule.letter === letter && rule.knownPosition === index) {
+              return Validity.correct
+            } else {
+              return Validity.inplaceWrong
+            }
+          }
+        }
+        return Validity.wrong
+      })
+
+      if(this.currentRow < NUM_ROWS - 1) {
+        this.currentRow++
+        this.wordRows[this.currentRow].rowState = RowState.current
+        this.currentLetter = 0
+        this.updateRules()
+        this.updateNextWord()
+      } else {
+        // handle finish
+      }
+    }
+  }
+
   private async updateNextWord(): Promise<void> {
-    const word = await this.dictionaryService.getNextWord(this.currentRules)
-    this.wordRows[this.currentRow].word = word.split('')
+    const nextSuggestions = await this.dictionaryService.getNextSuggestions(this.currentRules, 10)
+    this.suggestionIndex = 0
+    this.suggestions = nextSuggestions
+    this.wordRows[this.currentRow].word = this.suggestions[this.suggestionIndex].split('')
   }
 
   private updateRules() {
@@ -155,33 +191,6 @@ export class Tab1Page implements AfterViewInit {
     }
   }
 
-  private handleEnter() {
-    if (this.isRowComplete(this.currentRow)) {
-      this.wordRows[this.currentRow].rowState = RowState.past
-      this.wordRows[this.currentRow].validity = this.wordRows[this.currentRow].word.map((letter, index) => {
-        for(const rule of this.currentRules) {
-          if (rule.includes) {
-            if (rule.letter === letter && rule.knownPosition === index) {
-              return Validity.correct
-            } else {
-              return Validity.inplaceWrong
-            }
-          }
-        }
-        return Validity.wrong
-      })
-
-      console.log({ obj: this.wordRows[this.currentRow] })
-
-      if(this.currentRow < NUM_ROWS - 1) {
-        this.currentRow++
-        this.wordRows[this.currentRow].rowState = RowState.current
-        this.currentLetter = 0
-      } else {
-        // handle finish
-      }
-    }
-  }
 
   private handleLetter(letter: string) {
     if (this.currentLetter < 5) {

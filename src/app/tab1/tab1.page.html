@@ -16,6 +16,14 @@
             <ion-icon slot="start" name="create-outline"></ion-icon>
             Editar
           </ion-button>
+          <ng-container *ngIf="isCurrentRow(row)">
+            <ion-button color="primary" (click)="nextSuggestion()">
+              <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
+            </ion-button>
+            <ion-button color="success" (click)="handleEnter()">
+              <ion-icon slot="icon-only" name="checkmark-outline"></ion-icon>
+            </ion-button>
+          </ng-container>
         </ion-col>
     </ion-row>
   </ion-grid>

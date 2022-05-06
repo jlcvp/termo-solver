@@ -17,7 +17,7 @@
             Editar
           </ion-button>
           <ng-container *ngIf="isCurrentRow(row)">
-            <ion-button color="primary" (click)="nextSuggestion()">
+            <ion-button [disabled]="suggestions.length === 0" color="primary" (click)="nextSuggestion()">
               <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
             </ion-button>
             <ion-button color="success" (click)="handleEnter()">

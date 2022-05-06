@@ -1,5 +1,7 @@
 import { AfterViewInit, Component } from '@angular/core';
+import { ToastController } from '@ionic/angular';
 import { Rule } from '../models/rule';
+import { ToastType } from '../models/toastType';
 import { DictionaryService } from '../services/dictionary.service';
 
 const NUM_ROWS = 6
@@ -13,11 +15,11 @@ export class Tab1Page implements AfterViewInit {
   wordRows: { word: string[]; rowState: RowState; validity: Validity[] }[] = []
   currentRow = 0
   currentLetter = 0
-  private suggestions: string[] = []
+  suggestions: string[] = []
   private suggestionIndex = 0
   private currentRules: Rule[] = []
 
-  constructor(private dictionaryService: DictionaryService) {
+  constructor(private dictionaryService: DictionaryService, private toastController: ToastController) {
     this.resetVars()
     this.updateNextWord()
     this.currentLetter = 4
@@ -122,7 +124,7 @@ export class Tab1Page implements AfterViewInit {
     this.suggestionIndex = (this.suggestionIndex + 1) % this.suggestions.length
 
     if (this.suggestionIndex === 0) {
-      // show toast
+      this.showToast('Fim das sugestões', ToastType.warning)
     }
     this.wordRows[this.currentRow].word = this.suggestions[this.suggestionIndex].split('')
   }
@@ -159,7 +161,43 @@ export class Tab1Page implements AfterViewInit {
     const nextSuggestions = await this.dictionaryService.getNextSuggestions(this.currentRules, 10)
     this.suggestionIndex = 0
     this.suggestions = nextSuggestions
-    this.wordRows[this.currentRow].word = this.suggestions[this.suggestionIndex].split('')
+    if(this.suggestions.length > 0) {
+      this.wordRows[this.currentRow].word = this.suggestions[this.suggestionIndex].split('')
+    } else {
+      this.showToast('Não há mais palavras possíveis pelas regras', ToastType.error)
+    }
+  }
+
+  private showToast(message: string, type: ToastType) {
+    let color: string
+    switch (type) {
+      case ToastType.error:
+        color = 'danger'
+        break
+      case ToastType.warning:
+        color = 'warning'
+        break
+      case ToastType.success:
+        color = 'success'
+        break
+      case ToastType.info:
+        color = 'primary'
+        break
+    }
+
+    this.toastController.create({
+      message,
+      color,
+      duration: 4000,
+      position: 'top',
+      buttons: [
+        {
+          role: 'cancel',
+          side: 'end',
+          icon: 'close'
+        }
+      ]
+    }).then(toast => toast.present())
   }
 
   private updateRules() {

@@ -8,12 +8,12 @@
   </ion-row>
   <ion-row class="ion-justify-content-center second-row">
     <ion-col class="ion-no-padding" size="auto" *ngFor="let key of secondRow">
-      <ion-button class="ion-no-padding" (click)="onKeyPress(key)" class="letter-key">
+      <ion-button class="ion-no-padding letter-key" (click)="onKeyPress(key)">
         {{key}}
       </ion-button>
     </ion-col>
     <ion-col class="ion-no-padding" size="auto">
-      <ion-button size="full" (click)="onKeyPress('backspace')" class="backspace-key">
+      <ion-button size="block" (click)="onKeyPress('backspace')" class="backspace-key">
         <ion-icon slot="icon-only" name="backspace"></ion-icon>
       </ion-button>
     </ion-col>
@@ -25,7 +25,7 @@
       </ion-button>
     </ion-col>
     <ion-col class="ion-no-padding" size="2">
-      <ion-button size="full" (click)="onKeyPress('enter')" class="enter-key">
+      <ion-button size="block" (click)="onKeyPress('enter')" class="enter-key">
         <ion-icon slot="icon-only" name="return-down-back"></ion-icon>
       </ion-button>
     </ion-col>
